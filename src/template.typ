@@ -26,7 +26,8 @@
 // Persistent page background
 // ============================================================
 
-#let _transparent-image(img, opacity) = context {
+#let _transparent-image(source, opacity) = context {
+  let img = image(source)
   let size = measure(img)
   stack(
     img,
@@ -34,7 +35,7 @@
       dy: -1000pt,
       box(
         width: 100%,
-        height: 100%,
+        height: 101%,
         fill: white.transparentize(opacity),
       ),
     ),
@@ -49,7 +50,7 @@
     width: width * 2,
     height: height * 2,
     stroke: none,
-    _transparent-image(image(width: width * 2, height : height * 2, "../assets/background-right-pane.jpg"), 20%),
+    _transparent-image("../assets/background-right-pane.jpg", 20%),
   )
 
   place(
@@ -58,7 +59,7 @@
       width: width * _left-pane-width,
       height: height,
       stroke: none,
-      move(dx: -20pt, dy: -20pt, image("../assets/background-left-pane.jpg", fit: "stretch", height: 150%, width: 113%)),
+      move(dx: -20pt, dy: -20pt, image("../assets/background-left-pane.png", fit: "stretch", height: 150%, width: 113%)),
     ),
   )
   place(
@@ -103,7 +104,7 @@
 }
 #let _left-pane-heading(spacing, content) = {
   v(-10pt + spacing)
-  box(width: 110%, fill: _left-pane-title-color)[
+  box(width: 120%, fill: _left-pane-title-color)[
     #_common-pane-heading(content)
   ]
   v(-14pt)
@@ -181,7 +182,10 @@
   ]
 }
 
-#let contact(courriel: none, telephone: none, adresse: none) = {
+#let contact(courriel: none, telephone: none, adresse: none, espacement: 0pt) = {
+  set text(fill: rgb("#3D432F"), font: "Book Antiqua",
+      size: 13pt)
+  
   provide-icons(
     json("../assets/mdi-light.json"),
   )
@@ -189,26 +193,40 @@
   let elements = ()
 
   if courriel != none {
-    elements.push(icon("mdi-light:email"))
+    elements.push([
+      #set text(fill: white)
+      #icon("mdi-light:email")
+      #v(-6pt)
+    ])
     elements.push(courriel)
   }
 
   if telephone != none {
-    elements.push(icon("mdi-light:phone"))
+    elements.push([
+      #set text(fill: white)
+      #icon("mdi-light:phone")
+      #v(-4pt)
+    ])
     elements.push(telephone)
   }
 
   if adresse != none {
-    elements.push(icon("mdi-light:home"))
+    elements.push([
+      #set text(fill: white)
+      #icon("mdi-light:home")
+      #v(-6pt)
+    ])
     elements.push(adresse)
   }
 
-  align(left + horizon, table(
-    columns: 2,
+  v(-10pt)
+  align(center + horizon, strong(table(
+    columns: 1,
     column-gutter: 2pt,
+    // row-gutter: espacement,
     stroke: none,
     ..elements,
-  ))
+  )))
 }
 
 #let activite(
@@ -257,7 +275,7 @@
     dx: -14%,
     block(
       width: 130%,
-      inset: (left: 24pt, right: 12pt, top: 12pt, bottom: 12pt),
+      inset: (left: 24pt, right: 12pt, top: 12pt, bottom: 14pt),
       fill: white,
       content,
     ),
@@ -323,7 +341,7 @@
     block(
       inset: (
         top: 1.2cm,
-        bottom: 1.2cm,
+        bottom: 0cm,
         left: 1.0cm,
         right: 1.2cm,
       ),
@@ -331,10 +349,7 @@
         #show heading: content => {
           _right-pane-heading(panneau-droit-espacemement, content)
         }
-        #block(
-          inset: (left: 12pt, right: 12pt), 
-          panneau-droit
-        )
+        #block(inset: (left: 12pt, right: 12pt), panneau-droit)
       ],
     ),
   )
